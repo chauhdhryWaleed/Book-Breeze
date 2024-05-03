@@ -35,16 +35,16 @@ async function connectToDatabase() {
         });
 
         //get all the books from database
-        app.get("/all-books", async (req, res) => {
-            try {
-                const books = await booksCollection.find(); // Find all books
-                const result = await books.toArray(); // Convert cursor to array
-                res.send(result); // Send the array of books as response
-            } catch (error) {
-                console.error("Error fetching all books:", error);
-                res.status(500).json({ message: "Internal server error" });
-            }
-        });
+        // app.get("/all-books", async (req, res) => {
+        //     try {
+        //         const books = await booksCollection.find(); // Find all books
+        //         const result = await books.toArray(); // Convert cursor to array
+        //         res.send(result); // Send the array of books as response
+        //     } catch (error) {
+        //         console.error("Error fetching all books:", error);
+        //         res.status(500).json({ message: "Internal server error" });
+        //     }
+        // });
 
         //update a book data: patch or update method 
 
@@ -76,6 +76,21 @@ async function connectToDatabase() {
            
             const result= await booksCollection.deleteOne(filter);  // deletes the book from the collection on basis of id
             res.send(result);
+            })
+
+            //find by category if user enters only /all-books he will get all the books info
+
+            app.get("/all-books",async(req,res)=>{
+                let query={}
+                if(req.query?.category) //req.query.category extracts the value of the "category" query parameter from the request URL. ? handle the case if the command returns null
+                    {
+                        query={category:req.query.category}
+                    }
+                const result= await booksCollection.find(query).toArray(); //executes a MongoDB find operation using the constructed query object. If no query object is provided (i.e., no category filter is specified), it fetches all books.
+
+                res.send(result) //sends the array of books as the response to the client
+
+
             })
     } catch (error) {
         console.error("Error connecting to MongoDB:", error);
