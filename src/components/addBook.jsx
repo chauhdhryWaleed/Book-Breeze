@@ -1,31 +1,39 @@
 import React, { useState } from "react";
 import axios from "axios"; // Import axios
 import { Link } from "react-router-dom";
+// import ShoppingCart from "./cart"
+
 function AddBookForm() {
   const [formData, setFormData] = useState({
-    name: "",
-    author: "",
-    price: 0,
+    bookTitle: "",
+    authorName: "",
+    imageURL: "",
     category: "Select category",
-    description: "",
-    // avatar: null // Added avatar field to store uploaded file
-    imgurl: "",
+    bookDescription: "",
+    price: 0,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isHidden, setIsHidden] = useState(true);  
+  
+
+    const toggleVisibility = () => {
+      setIsHidden(!isHidden);
+    };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    const newValue = name === 'price' ? parseFloat(value) : value; // Convert price to a number if the field name is 'price'
     setFormData((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: newValue,
     }));
   };
 
-  // const handleFileChange = (e) => {
-  //   setFormData({ ...formData, avatar: e.target.files[0] });
-  // };
 
-  const handleSubmit = async (e) => {
+
+   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true); // Set isSubmitting to true when the form is submitting
     try {
       // Send a POST request to the backend with form data
       const response = await axios.post(
@@ -33,24 +41,39 @@ function AddBookForm() {
         formData
       );
       console.log(response.data); // Log response from the server
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setIsHidden(false) // Enable the button after 2 seconds
+      }, 2000);
     } catch (error) {
       console.error("Error uploading book:", error);
+      setIsSubmitting(false); // Ensure the button is enabled in case of an error
     }
   };
   return (
+    // <Router>
+    //        <Routes>
+    //        <Route path="/cart" element={<ShoppingCart />} />
+
+    //        </Routes>
+
     <section>
+
       <div className="container  border-2 bg-emerald-50">
         <div className="py-8 px-4 my-6 border-2     bg-white shadow-emerald-500 opacity-75 shadow-xl align-middle mx-auto max-w-2xl rounded-lg  lg:py-16">
+          {!isHidden && <div className=" px-2 py-1 bg-green-300 "> book added successfully</div>}
           <div className="flex flex-row justify-between">
             <h2 className="mb-4 text-xl font-bold text-teal-500 dark:text-white">
-              Add a new Book
+              Upload Book
             </h2>
             <span>
-              <button className="py-2">
+              <button >
+                <Link to="/cart" >
                 <lord-icon
                   src="https://cdn.lordicon.com/zxvuvcnc.json"
                   trigger="hover"
-                ></lord-icon>
+                  ></lord-icon>
+                  </Link>
               </button>
             </span>
           </div>
@@ -58,17 +81,17 @@ function AddBookForm() {
             <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
               <div className="sm:col-span-2">
                 <label
-                  htmlFor="name"
+                  htmlFor="bookTitle"
                   className="block mb-2 text-sm font-medium text-black  dark:text-white"
                 >
                   Book Name
                 </label>
                 <input
                   type="text"
-                  name="name"
-                  id="name"
+                  name="bookTitle"
+                  id="bookTitle"
                   autoComplete="off"
-                  value={formData.name}
+                  value={formData.bookTitle}
                   onChange={handleChange}
                   className=" border border-gray-300 bg-gray-50 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   placeholder="Type book name"
@@ -77,41 +100,24 @@ function AddBookForm() {
               </div>
               <div className="w-full">
                 <label
-                  htmlFor="author"
+                  htmlFor="authorName"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Author
                 </label>
                 <input
                   type="text"
-                  name="author"
-                  id="author"
+                  name="authorName"
+                  id="authorName"
                   autoComplete="off"
-                  value={formData.author}
+                  value={formData.authorName}
                   onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  placeholder="Product brand"
+                  placeholder="Author Name"
                   required
                 />
               </div>
-              {/* <div className="w-full">
-              <label
-                htmlFor="isbn"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                ISBN 
-              </label>
-              <input
-                type="number"
-                name="isbn"
-                id="isbn"
-                value={formData.isbn}
-                onChange={handleChange}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Product brand"
-                required
-                />
-            </div> */}
+              
               <div>
                 <label
                   htmlFor="category"
@@ -125,12 +131,12 @@ function AddBookForm() {
                   value={formData.category}
                   onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                >
+                  >
                   <option>Select genre</option>
-                  <option value="TV">fiction</option>
-                  <option value="PC">classic</option>
-                  <option value="GA">historic</option>
-                  <option value="PH">romantic</option>
+                  <option value="fiction">fiction</option>
+                  <option value="classic">classic</option>
+                  <option value="historic">historic</option>
+                  <option value="romantic">romantic</option>
                 </select>
               </div>
 
@@ -150,35 +156,21 @@ function AddBookForm() {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   placeholder="$2999"
                   required
-                />
+                  />
               </div>
-              {/* /* <div>
-              <label
-                htmlFor="user_avatar"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                Upload book image
-              </label>
-              <input
-                className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                aria-describedby="user_avatar_help"
-                id="user_avatar"
-                type="file"
-                onChange={handleFileChange}
-                /> 
-                            </div> */}
+            
               <div className="w-full">
                 <label
-                  htmlFor="imgurl"
+                  htmlFor="imageURL"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Image URL
                 </label>
                 <input
                   type="text"
-                  name="imgurl"
+                  name="imageURL"
                   id="imgurl"
-                  value={formData.imgurl}
+                  value={formData.imageURL}
                   onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   placeholder="Image url"
@@ -189,16 +181,16 @@ function AddBookForm() {
 
               <div className="sm:col-span-2">
                 <label
-                  htmlFor="description"
+                  htmlFor="bookDescription"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Description
                 </label>
                 <textarea
                   id="description"
-                  name="description"
+                  name="bookDescription"
                   rows="8"
-                  value={formData.description}
+                  value={formData.bookDescription}
                   onChange={handleChange}
                   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   placeholder="Your description here"
@@ -209,6 +201,7 @@ function AddBookForm() {
 
             <button 
               type="submit"
+              disabled={isSubmitting} // Disable the button when isSubmitting is true
               className="w-48  items-center  py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-green-500 bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
               >
               Add product
@@ -218,6 +211,7 @@ function AddBookForm() {
         </div>
       </div>
     </section>
+                  // </Router>
   );
 }
 
