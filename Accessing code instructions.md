@@ -3,9 +3,9 @@
 ## Add routes to file for front end 
 - make Routers folder in src 
 - add routes.jsx file in it (it will hold all routes for navigation)
-- import routes in main.jsx and update it (upload on talha branch just copy paste it)
+- import routes in main.jsx and update it (uploaded on talha branch just copy paste it)
 - add Navbar component in src/components
-- now modify app.jsx (upload on talha branch just copy paste it)
+- now modify app.jsx (uploaded on talha branch just copy paste it)
 - now you will see Navbar (some links are commented out yet) 
 
 
