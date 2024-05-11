@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import Footer from './footer';
 const Contactus = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -28,10 +28,11 @@ const Contactus = () => {
   };
 
   return (
-    <div className="container mx-auto mt-20">
-      <h1 className="text-green text-2xl font-bold mb-5">Contact Us</h1>
-      <form onSubmit={handleSubmit} className="max-w-lg mx-auto">
-        <div className="mb-4">
+    <div className="flex flex-col min-h-screen">
+      <div className="container mx-auto mt-20 flex-grow"> {/* flex-grow to expand content to fill remaining space */}
+        <h1 className="text-green text-2xl font-bold mb-5">Contact Us</h1>
+        <form onSubmit={handleSubmit} className="max-w-lg mx-auto">
+           <div className="mb-4">
           <label htmlFor="name" className=" block mb-2 ">Name</label>
           <input
             type="text"
@@ -76,10 +77,9 @@ const Contactus = () => {
         >
           Submit
         </button>
-      </form>
-      <footer className="bg-white text-black text-center py-4 fixed bottom-0 w-full">
-        <p>&copy; 2024 Bookstore. All rights reserved.</p>
-      </footer>
+        </form>
+      </div>
+      <Footer />
     </div>
   );
 };
