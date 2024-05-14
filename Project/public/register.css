@@ -1,0 +1,6 @@
+.logincontainer{
+    background-image: url("./bookbackground.jpeg"); /* Adjust the path based on your directory structure */
+    /* background-repeat: no-repeat; */
+    background-size: cover; 
+    background-position: center;
+}
